@@ -1,2 +1,33 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+@'
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Data files (exclude real datasets from the repo by default —
+# remove/adjust this if you want to version-control sample data)
+*.csv
+*.xlsx
+
+# Logs
+*.log
+'@ | Out-File -FilePath .gitignore -Encoding utf8

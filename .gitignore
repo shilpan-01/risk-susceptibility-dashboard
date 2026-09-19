@@ -1,4 +1,3 @@
-@'
 # Byte-compiled / cache
 __pycache__/
 *.py[cod]
@@ -23,11 +22,12 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Data files (exclude real datasets from the repo by default —
-# remove/adjust this if you want to version-control sample data)
+# Data files — excluded by default, EXCEPT the bundled dataset the app ships with
 *.csv
 *.xlsx
+!data/scoring_results_with_AUC.csv
 
 # Logs
 *.log
-'@ | Out-File -FilePath .gitignore -Encoding utf8
+
+dash/

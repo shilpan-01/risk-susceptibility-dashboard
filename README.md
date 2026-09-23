@@ -1,5 +1,7 @@
 # RubyGems Software Supply Chain Investigative Study — Dashboard
 
+🔗 **[Live Demo](https://risk-susceptibility-dashboard.streamlit.app/)**
+
 An interactive, multipage Streamlit dashboard exploring benign vs. malicious RubyGems
 packages, built to accompany the Master of Engineering thesis:
 
@@ -17,11 +19,10 @@ schema is supported as an optional override).
   by metric / aspect / composite score
 - **KS Validation** — Kolmogorov–Smirnov statistical test (ECDF plot + summary table with
   KS statistic, AUC, Strength, and normalized Weight %), with thesis methodology notes
+- **Enrichment** — top-% capture rate vs. random baseline (tail-concentration analysis),
+  selectable by metric / aspect / composite score, with an auto-generated conclusion
 - **Project Summary** — a simplified, chart-only view (percentages, ranked bar charts) for
   a non-technical audience
-
-An **Enrichment analysis** page (top-% capture rate vs. random baseline, per the thesis's
-tail-concentration analysis) is planned as a future addition.
 
 ## Requirements
 
@@ -66,11 +67,12 @@ instead of crashing.
 ```
 .
 ├── Home.py                        # Main entry point — intro, methodology, references
-├── data_utils.py                  # Shared data loading + KS/AUC statistics functions
+├── data_utils.py                  # Shared data loading + KS/AUC/enrichment functions
 ├── pages/
 │   ├── 1_Distribution.py          # Benign vs malicious score distributions
 │   ├── 2_KS_Validation.py         # KS test ECDF plot + summary table
-│   └── 3_Project_Summary.py       # Simplified chart-only summary
+│   ├── 3_Enrichment.py            # Top-% capture rate vs random baseline
+│   └── 4_Project_Summary.py       # Simplified chart-only summary
 ├── data/
 │   └── scoring_results_with_AUC.csv   # Bundled thesis dataset (79,000 packages)
 ├── requirements.txt

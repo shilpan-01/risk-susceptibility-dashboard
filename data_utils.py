@@ -119,3 +119,49 @@ def dataset_counts(df):
     benign_pct = benign / total * 100 if total else 0
     malicious_pct = malicious / total * 100 if total else 0
     return total, benign, malicious, benign_pct, malicious_pct
+
+
+def enrichment_table(df, score_col, percentages=(1, 5, 10, 20, 25, 50)):
+    """
+    For each top-% threshold, ranks packages by score_col (descending) and reports:
+    Top N, Expected malicious under random selection, Actual malicious found,
+    Enrichment factor (actual/expected), and Capture % (share of all malicious found).
+    """
+    total = len(df)
+    malicious_total = int((df[CLASS_COL] == MALICIOUS_VAL).sum())
+    malicious_rate = malicious_total / total if total else 0
+    sorted_df = df.sort_values(score_col, ascending=False).reset_index(drop=True)
+
+    rows = []
+    for pct in percentages:
+        top_n = max(1, int(round(total * pct / 100)))
+        top_slice = sorted_df.iloc[:top_n]
+        actual = int((top_slice[CLASS_COL] == MALICIOUS_VAL).sum())
+        expected = top_n * malicious_rate
+        enrichment = actual / expected if expected > 0 else np.nan
+        capture = actual / malicious_total * 100 if malicious_total > 0 else np.nan
+        rows.append({
+            "Top %": pct,
+            "Top N Packages": top_n,
+            "Expected (Random)": expected,
+            "Actual Malicious": actual,
+            "Enrichment (x)": enrichment,
+            "Capture (%)": capture,
+        })
+    return pd.DataFrame(rows)
+
+
+def capture_curve(df, score_col, steps=100):
+    """Cumulative % of malicious packages captured as the top-% threshold increases."""
+    total = len(df)
+    malicious_total = int((df[CLASS_COL] == MALICIOUS_VAL).sum())
+    sorted_df = df.sort_values(score_col, ascending=False).reset_index(drop=True)
+
+    percentiles = np.linspace(1, 100, steps)
+    capture_pct = []
+    for p in percentiles:
+        top_n = max(1, int(round(total * p / 100)))
+        actual = int((sorted_df.iloc[:top_n][CLASS_COL] == MALICIOUS_VAL).sum())
+        capture_pct.append(actual / malicious_total * 100 if malicious_total > 0 else np.nan)
+
+    return percentiles, capture_pct

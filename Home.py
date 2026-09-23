@@ -28,13 +28,15 @@ st.markdown("---")
 
 st.subheader("Explore the Analysis")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.page_link("pages/1_Distribution.py", label="📈 Distribution", icon="📈")
 with col2:
     st.page_link("pages/2_KS_Validation.py", label="🧪 KS Validation", icon="🧪")
 with col3:
-    st.page_link("pages/3_Project_Summary.py", label="📊 Project Summary", icon="📊")
+    st.page_link("pages/3_Enrichment.py", label="🎯 Enrichment", icon="🎯")
+with col4:
+    st.page_link("pages/4_Project_Summary.py", label="📊 Project Summary", icon="📊")
 
 st.markdown("---")
 

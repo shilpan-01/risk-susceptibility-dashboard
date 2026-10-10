@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-Select-String -Path pages\*.py -Pattern "Takeaway|How to read"
+
 st.title("💎 Software Supply Chain RubyGems Investigative Study")
 
 st.markdown(

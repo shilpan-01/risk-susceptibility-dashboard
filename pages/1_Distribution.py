@@ -2,7 +2,10 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
-from data_utils import CLASS_COL, BENIGN_VAL, MALICIOUS_VAL, get_dataframe, get_numeric_cols
+from data_utils import (
+    CLASS_COL, BENIGN_VAL, MALICIOUS_VAL, get_dataframe, get_numeric_cols,
+    ks_statistic_and_curve,
+)
 
 st.set_page_config(page_title="Distribution", page_icon="📈", layout="wide")
 
@@ -72,7 +75,32 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+b_mean, m_mean = benign_data.mean(), malicious_data.mean()
+ks_val = ks_statistic_and_curve(benign_data.values, malicious_data.values)[0]
+
+if b_mean == 0 and m_mean == 0:
+    takeaway = f"**Takeaway:** `{metric}` is zero for every package in this dataset, so it cannot tell the groups apart."
+else:
+    rel = (m_mean - b_mean) / b_mean * 100 if b_mean else float("nan")
+    direction = "higher" if m_mean > b_mean else "lower"
+    if ks_val < 0.2:
+        overlap = "overlap heavily"
+    elif ks_val < 0.4:
+        overlap = "overlap partly"
+    else:
+        overlap = "are clearly separated"
+    takeaway = (
+        f"**Takeaway:** on `{metric}`, malicious packages score {abs(rel):.1f}% {direction} on average "
+        f"({m_mean:.3f} vs {b_mean:.3f} for benign). The two curves {overlap}, so this score nudges "
+        f"the odds but cannot tell the groups apart on its own."
+    )
+
+st.info(takeaway)
+
 st.caption(
-    "Line-based frequency curves (density-normalized) instead of overlapping bars, so neither "
-    "class visually overpowers the other despite the class imbalance."
+    "**How to read this:** each curve shows how packages are spread across score values (taller = "
+    "more packages near that score). Curves are rescaled to the same area so the small malicious "
+    "group (red) can be compared fairly with the much larger benign group (blue). If the red curve "
+    "sits to the right of the blue one, malicious packages tend to score higher; the more the two "
+    "overlap, the weaker the score is at telling them apart."
 )

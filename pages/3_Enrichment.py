@@ -69,6 +69,27 @@ st.dataframe(
     use_container_width=True,
 )
 
+row10 = table_df[table_df["Top %"] == 10]
+if not row10.empty:
+    r = row10.iloc[0]
+    st.info(
+        f"**How to read this:** if you reviewed the top 10% of packages by `{score_col}` "
+        f"({int(r['Top N Packages']):,} packages), picking at random would be expected to include about "
+        f"{r['Expected (Random)']:.0f} malicious ones. This ranking included {int(r['Actual Malicious'])}, "
+        f"which is {r['Enrichment (x)']:.2f}× the random rate and covers {r['Capture (%)']:.1f}% of all "
+        f"malicious packages. An enrichment of 1.0× would mean no better than random."
+    )
+
+row1 = table_df[table_df["Top %"] == 1]
+if not row1.empty and not np.isnan(row1.iloc[0]["Enrichment (x)"]) and row1.iloc[0]["Enrichment (x)"] < 1:
+    r1 = row1.iloc[0]
+    st.warning(
+        f"**Note on the very top 1%:** it found {int(r1['Actual Malicious'])} malicious package(s) against "
+        f"{r1['Expected (Random)']:.1f} expected ({r1['Enrichment (x)']:.2f}×). With counts this small, a single "
+        "package changes the result, so read it as *no clear signal at the very top* rather than proof "
+        "it is worse. The score is best used to prioritise a wider band of packages, not as a detector."
+    )
+
 st.markdown("---")
 
 # ---------- Custom top-% + dynamic conclusion ----------

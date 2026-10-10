@@ -49,6 +49,20 @@ if not numeric_cols:
 
 st.markdown("---")
 
+ks_summary_df = build_ks_summary(df, numeric_cols)
+best = ks_summary_df.iloc[0]
+comp = ks_summary_df[ks_summary_df["Metric"] == "composite_score"]
+comp_txt = (
+    f" The overall composite score reaches KS = {comp.iloc[0]['KS Statistic']:.3f}."
+    if not comp.empty else ""
+)
+st.info(
+    f"**Takeaway:** the score that best separates malicious from benign packages is "
+    f"`{best['Metric']}` (KS = {best['KS Statistic']:.3f}).{comp_txt} "
+    "KS runs from 0 (the two groups look identical) to 1 (perfectly separated). Values around "
+    "0.1–0.2 mean a weak-to-moderate difference: a useful hint, not a classifier."
+)
+
 metric = st.selectbox("Metric / Attribute / Aspect / Composite Score", numeric_cols)
 
 benign_data = df.loc[df[CLASS_COL] == BENIGN_VAL, metric].dropna()
@@ -85,13 +99,14 @@ ks_fig.update_layout(
 st.plotly_chart(ks_fig, use_container_width=True)
 
 st.caption(
-    "The KS statistic is the maximum vertical gap between the two empirical cumulative "
-    "distribution functions (dashed line above)."
+    "**How to read this:** for any score on the x-axis, each line shows the share of that group's "
+    "packages scoring at or below it. If the red (malicious) line sits below the blue (benign) line, "
+    "malicious packages tend to have higher scores. The KS statistic is the biggest vertical gap "
+    "between the two lines (dashed marker): the bigger the gap, the better this score separates them."
 )
 
 st.markdown("#### KS Summary Table — All Metrics")
 
-ks_summary_df = build_ks_summary(df, numeric_cols)
 
 st.dataframe(
     ks_summary_df.style.format({

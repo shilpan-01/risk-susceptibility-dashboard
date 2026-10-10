@@ -59,10 +59,10 @@ st.markdown(
 )
 
 st.info(
-    "**Bottom line (thesis dataset):** malicious packages tend to score higher, most clearly on "
+    "**Research findings:** malicious packages tend to score higher, most clearly on "
     "the *maintenance* aspect, and reviewing the top-ranked 5–20% of packages finds roughly "
     "1.5× more malicious packages than random selection. That makes the score a useful "
-    "**prioritisation signal** — a way to decide what to review first — but the two groups "
+    "**prioritisation signal** that is a way to decide what to review first but the two groups "
     "overlap heavily, so it cannot identify malicious packages on its own."
 )
 
